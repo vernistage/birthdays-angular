@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class AppUser(AbstractUser):
     birth_date = models.DateField()
     invited_events = models.ManyToManyField(
-        Event,
+        'Event',
         through='Rsvp',
         through_fields=('invitee', 'event'),
     )
@@ -16,9 +16,12 @@ class Event(models.Model):
     address = models.TextField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    creator = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    creator = models.ForeignKey(
+        'AppUser',
+        on_delete=models.CASCADE,
+        related_name="event_rsvps")
     invitees = models.ManyToManyField(
-        AppUser,
+        'AppUser',
         through='Rsvp',
         through_fields=('event', 'invitee'),
     )
