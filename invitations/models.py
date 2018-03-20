@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 
 class AppUser(AbstractUser):
-    birth_date = models.DateField()
+    birth_date = models.DateField(blank=True, null=True)
     invited_events = models.ManyToManyField(
         'Event',
         through='Rsvp',
