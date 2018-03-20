@@ -1,15 +1,27 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from .models import Event
-# from .forms import EventForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+
+AppUser = get_user_model()
 
 def welcome(request):
     return render(request, 'welcome.html')
 
 def register(request):
-    return render(request, 'register.html')
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            AppUser = authenticate(username=username, password=raw_password)
+            login (request, AppUser)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'register.html', {'form': form})
 
 @login_required
 def events(request):
