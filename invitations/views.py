@@ -9,7 +9,7 @@ def welcome(request):
     return render(request, 'welcome.html')
 
 def register(request):
-    pass
+    return render(request, 'register.html')
 
 @login_required
 def events(request):

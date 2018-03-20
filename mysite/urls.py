@@ -20,7 +20,7 @@ from invitations import views as invitations_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^register/$', invitations_views.register, {'template_name': 'registration/register.html'}, name='register'),
+    url(r'^register/$', invitations_views.register, name='register'),
     url(r'^accounts/login/$', views.login, {'template_name': 'registration/login.html'}, name='login'),
     url(r'^accounts/logout/$', views.logout, name="logout", kwargs={'next_page': '/'}),
     url(r'', include('invitations.urls')),
