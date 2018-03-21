@@ -2,4 +2,11 @@
 
 {% block content %}
   <h1>Welcome</h1>
+  {% if user.is_authenticated %}
+    <h2>Hello {{ user.username }}</h2>
+    <a href="{% url 'user_profile' pk=user.pk %}">Click here to view your events</a>
+  {% else %}
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'register' %}">Register</a>
+  {% endif %}
 {% endblock %}
