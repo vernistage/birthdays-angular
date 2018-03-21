@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ user.username|capfirst }}'s Profile</h1>
+    <ul>
+      <li>birthday: {{ user.birth_date }}</li>
+    </ul>
+  <h2>{{ user.username|capfirst }}'s Events</h2>
+  <h3>Events you created<h3>
+    <ul>
+    </ul>
+  <h3>Invitations to you<h3>
+    <ul>
+    </ul>
+{% endblock %}
