@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 
 class AppUser(AbstractUser):
     birth_date = models.DateField(blank=True, null=True)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
     invited_events = models.ManyToManyField(
         'Event',
         through='Rsvp',
