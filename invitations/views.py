@@ -28,7 +28,8 @@ def register(request):
 
 @login_required
 def user_profile(request, pk):
-    return render(request, 'user_profile.html')
+    events = Event.objects.filter(creator = request.user)
+    return render(request, 'user_profile.html', {'events': events})
 
 @login_required
 def events(request):
