@@ -6,6 +6,7 @@
       <li>birthday: {{ user.birth_date }}</li>
     </ul>
   <h2>{{ user.username|capfirst }}'s Events</h2>
+  <a href="{% url 'event_new' %}">Create new event</a>
   <h3>Events you created<h3>
     <ul>
     </ul>

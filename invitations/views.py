@@ -39,7 +39,7 @@ def event(request, pk):
 
 @login_required
 def event_new(request):
-    pass
+    return render(request, 'event_new.html')
 
 @login_required
 def event_edit(request, pk):
