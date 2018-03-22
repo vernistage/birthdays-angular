@@ -24,12 +24,12 @@ def register(request):
             return redirect('user_profile', user.pk)
     else:
         form = SignUpForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'users/register.html', {'form': form})
 
 @login_required
 def user_profile(request, pk):
     events = Event.objects.filter(creator = request.user)
-    return render(request, 'user_profile.html', {'events': events})
+    return render(request, 'users/user_profile.html', {'events': events})
 
 @login_required
 def events(request):
@@ -38,7 +38,7 @@ def events(request):
 @login_required
 def event(request, pk):
     event = Event.objects.get(pk=pk)
-    return render(request, 'event.html', {'event': event})
+    return render(request, 'events/event.html', {'event': event})
 
 @login_required
 def event_new(request):
@@ -52,7 +52,7 @@ def event_new(request):
             return redirect('user_profile', user.pk)
     else:
         form = EventForm()
-    return render(request, 'event_edit.html', {'form': form})
+    return render(request, 'events/event_edit.html', {'form': form})
 
 @login_required
 def event_edit(request, pk):
@@ -66,7 +66,7 @@ def event_edit(request, pk):
             return redirect('event', pk=event.pk)
     else:
         form = EventForm(instance=event)
-        return render(request, 'event_edit.html', {'form': form})
+        return render(request, 'events/event_edit.html', {'form': form})
 
 @login_required
 def event_destroy(request, pk):
