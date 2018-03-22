@@ -42,8 +42,11 @@ def event(request, pk):
 def event_new(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
+        user = request.user
         if form.is_valid():
-            form.save()
+            new_event = form.save(commit=False)
+            new_event.creator = user
+            new_event.save()
             return redirect('user_profile', user.pk)
     else:
         form = EventForm()
