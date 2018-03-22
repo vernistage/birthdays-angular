@@ -37,7 +37,8 @@ def events(request):
 
 @login_required
 def event(request, pk):
-    pass
+    event = Event.objects.get(pk=pk)
+    return render(request, 'event.html', {'event': event})
 
 @login_required
 def event_new(request):
