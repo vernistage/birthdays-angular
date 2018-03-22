@@ -47,16 +47,26 @@ def event_new(request):
         user = request.user
         if form.is_valid():
             new_event = form.save(commit=False)
-            new_event.creator = user
+            new_event.creator = request.user
             new_event.save()
             return redirect('user_profile', user.pk)
     else:
         form = EventForm()
-    return render(request, 'event_new.html', {'form': form})
+    return render(request, 'event_edit.html', {'form': form})
 
 @login_required
 def event_edit(request, pk):
-    pass
+    event = get_object_or_404(Event, pk=pk)
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.creator = request.user
+            event.save()
+            return redirect('event', pk=event.pk)
+    else:
+        form = EventForm(instance=event)
+        return render(request, 'event_edit.html', {'form': form})
 
 @login_required
 def event_destroy(request, pk):
