@@ -70,4 +70,6 @@ def event_edit(request, pk):
 
 @login_required
 def event_destroy(request, pk):
-    pass
+    event = get_object_or_404(Event, pk=pk)
+    event.delete()
+    return redirect('user_profile', request.user.pk)
