@@ -1,4 +1,5 @@
 from .models import Event
+from .forms import EventForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -39,7 +40,14 @@ def event(request, pk):
 
 @login_required
 def event_new(request):
-    return render(request, 'event_new.html')
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile', user.pk)
+    else:
+        form = EventForm()
+    return render(request, 'event_new.html', {'form': form})
 
 @login_required
 def event_edit(request, pk):
