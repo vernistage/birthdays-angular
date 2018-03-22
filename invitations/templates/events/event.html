@@ -6,10 +6,17 @@
     <p>address: {{ event.address }}</p>
     <p>start: {{ event.start_time }}</p>
     <p>end: {{ event.end_time }} </p>
+  {% if invitation_count <= 0 %}
+    <h3>Invite People!</h3>
+  {% else %}
+    <h3>RSVP's:</h3>
+    {{ event.invitees.objects }}
+  {% endif %}
     <p>
       <a href="{% url 'event_edit' pk=event.pk %}">Edit Post</a>
     </p>
     <p>
       <a href="{% url 'event_destroy' pk=event.pk %}">Delete Post</a>
     </p>
+
 {% endblock %}

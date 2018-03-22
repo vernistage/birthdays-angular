@@ -38,7 +38,8 @@ def events(request):
 @login_required
 def event(request, pk):
     event = Event.objects.get(pk=pk)
-    return render(request, 'events/event.html', {'event': event})
+    invitation_count = event.invitees.all().count()
+    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count})
 
 @login_required
 def event_new(request):
