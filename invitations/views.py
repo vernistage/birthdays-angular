@@ -1,4 +1,5 @@
 from .models import Event
+from .forms import EventForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -23,11 +24,12 @@ def register(request):
             return redirect('user_profile', user.pk)
     else:
         form = SignUpForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'users/register.html', {'form': form})
 
 @login_required
 def user_profile(request, pk):
-    return render(request, 'user_profile.html')
+    events = Event.objects.filter(creator = request.user)
+    return render(request, 'users/user_profile.html', {'events': events})
 
 @login_required
 def events(request):
@@ -35,16 +37,39 @@ def events(request):
 
 @login_required
 def event(request, pk):
-    pass
+    event = Event.objects.get(pk=pk)
+    return render(request, 'events/event.html', {'event': event})
 
 @login_required
 def event_new(request):
-    pass
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        user = request.user
+        if form.is_valid():
+            new_event = form.save(commit=False)
+            new_event.creator = request.user
+            new_event.save()
+            return redirect('user_profile', user.pk)
+    else:
+        form = EventForm()
+    return render(request, 'events/event_edit.html', {'form': form})
 
 @login_required
 def event_edit(request, pk):
-    pass
+    event = get_object_or_404(Event, pk=pk)
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.creator = request.user
+            event.save()
+            return redirect('event', pk=event.pk)
+    else:
+        form = EventForm(instance=event)
+        return render(request, 'events/event_edit.html', {'form': form})
 
 @login_required
 def event_destroy(request, pk):
-    pass
+    event = get_object_or_404(Event, pk=pk)
+    event.delete()
+    return redirect('user_profile', request.user.pk)

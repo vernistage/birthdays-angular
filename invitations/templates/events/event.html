@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{{ event.title }}</h2>
+    <p>description: {{ event.description }}</p>
+    <p>address: {{ event.address }}</p>
+    <p>start: {{ event.start_time }}</p>
+    <p>end: {{ event.end_time }} </p>
+    <p>
+      <a href="{% url 'event_edit' pk=event.pk %}">Edit Post</a>
+    </p>
+    <p>
+      <a href="{% url 'event_destroy' pk=event.pk %}">Delete Post</a>
+    </p>
+{% endblock %}
