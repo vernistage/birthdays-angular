@@ -13,10 +13,10 @@
     {{ event.invitees.objects }}
   {% endif %}
     <p>
-      <a href="{% url 'event_edit' pk=event.pk %}">Edit Post</a>
+      <a href="{% url 'event_edit' pk=event.pk %}">Edit Event</a>
     </p>
     <p>
-      <a href="{% url 'event_destroy' pk=event.pk %}">Delete Post</a>
+      <a href="{% url 'event_destroy' pk=event.pk %}">Delete Event</a>
     </p>
 
 {% endblock %}

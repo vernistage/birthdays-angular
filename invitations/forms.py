@@ -17,4 +17,4 @@ class SignUpForm(UserCreationForm):
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        fields = ['title', 'description', 'address', 'start_time', 'end_time']
+        exclude = ['creator', 'created_at', 'last_modified']
