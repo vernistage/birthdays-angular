@@ -45,6 +45,8 @@ def event(request, pk):
 def event_new(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
+        invitees_keys = form['invitees'].value()
+        # Make invitations
         user = request.user
         if form.is_valid():
             new_event = form.save(commit=False)
