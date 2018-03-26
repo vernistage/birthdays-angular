@@ -10,7 +10,11 @@
     <h3>Invite People!</h3>
   {% else %}
     <h3>RSVP's:</h3>
-    {{ event.invitees.objects }}
+    <ul>
+      {% for invitee in invitees %}
+        <li>{{ invitee.username }}</li>
+      {% endfor %}
+    </ul>
   {% endif %}
     <p>
       <a href="{% url 'event_edit' pk=event.pk %}">Edit Event</a>
