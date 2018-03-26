@@ -30,6 +30,11 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
+    def invite_people(invitee_pks):
+        for k in invitees_keys:
+            invitee = AppUser.objects.get(pk=k)
+            Rsvp(event=new_event, invitee=invitee).save()
+
 class Rsvp(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     invitee = models.ForeignKey(AppUser, on_delete=models.CASCADE)

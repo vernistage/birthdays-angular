@@ -1,5 +1,5 @@
-from .models import Event
-from .forms import EventForm
+from .models import Event, AppUser, Rsvp
+from .forms import EventForm, EventEditForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -38,17 +38,21 @@ def events(request):
 @login_required
 def event(request, pk):
     event = Event.objects.get(pk=pk)
-    return render(request, 'events/event.html', {'event': event})
+    invitation_count = event.invitees.all().count()
+    invitees = event.invitees.all()
+    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees})
 
 @login_required
 def event_new(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
+        invitees_keys = form['invitees'].value()
         user = request.user
         if form.is_valid():
             new_event = form.save(commit=False)
             new_event.creator = request.user
             new_event.save()
+            new_event.invite_people(invitees_keys)
             return redirect('user_profile', user.pk)
     else:
         form = EventForm()
@@ -58,14 +62,14 @@ def event_new(request):
 def event_edit(request, pk):
     event = get_object_or_404(Event, pk=pk)
     if request.method == "POST":
-        form = EventForm(request.POST, instance=event)
+        form = EventEditForm(request.POST, instance=event)
         if form.is_valid():
             event = form.save(commit=False)
             event.creator = request.user
             event.save()
             return redirect('event', pk=event.pk)
     else:
-        form = EventForm(instance=event)
+        form = EventEditForm(instance=event)
         return render(request, 'events/event_edit.html', {'form': form})
 
 @login_required
