@@ -31,7 +31,8 @@ def user_profile(request, pk):
     events = Event.objects.filter(creator = request.user)
     invitations = request.user.invited_events.all()
     invitation_count = request.user.invited_events.all().count()
-    return render(request, 'users/user_profile.html', {'events': events, 'invitations': invitations, 'invitation_count': invitation_count})
+    to_rsvps = Rsvp.objects.get(invitee = request.user)
+    return render(request, 'users/user_profile.html', {'events': events, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
 
 @login_required
 def events(request):
@@ -42,7 +43,9 @@ def event(request, pk):
     event = Event.objects.get(pk=pk)
     invitation_count = event.invitees.all().count()
     invitees = event.invitees.all()
-    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees})
+    user = request.user
+    creator = event.is_creator(user)
+    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees, 'is_creator': creator})
 
 @login_required
 def event_new(request):

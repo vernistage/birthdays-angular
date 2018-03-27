@@ -6,21 +6,25 @@
     <p>address: {{ event.address }}</p>
     <p>start: {{ event.start_time }}</p>
     <p>end: {{ event.end_time }} </p>
-  {% if invitation_count <= 0 %}
-    <h3>Invite People!</h3>
-  {% else %}
-    <h3>RSVP's:</h3>
-    <ul>
-      {% for invitee in invitees %}
-        <li>{{ invitee.username }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+  {% if is_creator %}
+    {% if invitation_count <= 0 %}
+      <h3>Invite People!</h3>
+    {% else %}
+      <h3>RSVP's:</h3>
+      <ul>
+        {% for invitee in invitees %}
+          <li>{{ invitee.username }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
     <p>
       <a href="{% url 'event_edit' pk=event.pk %}">Edit Event</a>
     </p>
     <p>
       <a href="{% url 'event_destroy' pk=event.pk %}">Delete Event</a>
     </p>
-
+  {% else %}
+    <h3>RSVP Now</h3>
+      Form for yes or no
+  {% endif %}
 {% endblock %}
