@@ -29,7 +29,9 @@ def register(request):
 @login_required
 def user_profile(request, pk):
     events = Event.objects.filter(creator = request.user)
-    return render(request, 'users/user_profile.html', {'events': events})
+    invitations = request.user.invited_events.all()
+    invitation_count = request.user.invited_events.all().count()
+    return render(request, 'users/user_profile.html', {'events': events, 'invitations': invitations, 'invitation_count': invitation_count})
 
 @login_required
 def events(request):
