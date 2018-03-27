@@ -35,6 +35,9 @@ class Event(models.Model):
             invitee = AppUser.objects.get(pk=k)
             Rsvp(event=new_event, invitee=invitee).save()
 
+    def is_creator(self, user):
+        return user.pk == self.creator.pk
+
 class Rsvp(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     invitee = models.ForeignKey(AppUser, on_delete=models.CASCADE)
