@@ -1,5 +1,5 @@
 from .models import Event, AppUser, Rsvp
-from .forms import EventForm, EventEditForm
+from .forms import EventForm, EventEditForm, RsvpEditForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -45,7 +45,13 @@ def event(request, pk):
     invitees = event.invitees.all()
     user = request.user
     creator = event.is_creator(user)
-    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees, 'is_creator': creator})
+    invitee_rsvp = None
+    for invitee in invitees:
+        if invitee.pk == user.pk:
+            invitee_rsvp = Rsvp.objects.get(invitee=request.user, event=event)
+        else:
+            invitee_rsvp = None
+    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees, 'is_creator': creator, 'invitee_rsvp': invitee_rsvp})
 
 @login_required
 def event_new(request):
@@ -82,3 +88,17 @@ def event_destroy(request, pk):
     event = get_object_or_404(Event, pk=pk)
     event.delete()
     return redirect('user_profile', request.user.pk)
+
+@login_required
+def rsvp_edit(request, pk):
+    rsvp = get_object_or_404(Rsvp, pk=pk)
+    event = rsvp.event
+    if request.method == "POST":
+        form = RsvpEditForm(request.POST, instance=rsvp)
+        if form.is_valid():
+            rsvp_update = form.save(commit=False)
+            rsvp_update.save()
+            return redirect('event', pk=event.pk)
+    else:
+        form = RsvpEditForm(instance=rsvp)
+        return render(request, 'events/rsvp_edit.html', {'form': form, 'event':event})

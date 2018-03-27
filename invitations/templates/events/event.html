@@ -24,7 +24,8 @@
       <a href="{% url 'event_destroy' pk=event.pk %}">Delete Event</a>
     </p>
   {% else %}
-    <h3>RSVP Now</h3>
-      Form for yes or no
+    <h3>RSVP</h3>
+      You are attending: {{ invitee_rsvp.is_attending }}
+      <p> <a href="{% url 'rsvp_edit' pk=invitee_rsvp.pk %}">Change RSVP</a> </p>
   {% endif %}
 {% endblock %}
