@@ -14,11 +14,6 @@ class EventForm(ModelForm):
         model = Event
         exclude = ['creator', 'created_at', 'last_modified']
 
-class EventEditForm(ModelForm):
-    class Meta:
-        model = Event
-        exclude = ['creator', 'created_at', 'last_modified', 'invitees']
-
 class RsvpEditForm(ModelForm):
     class Meta:
         model = Rsvp

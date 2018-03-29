@@ -1,5 +1,5 @@
 from .models import Event, AppUser, Rsvp
-from .forms import EventForm, EventEditForm, RsvpEditForm
+from .forms import EventForm, EventForm, RsvpEditForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -67,20 +67,24 @@ def event_new(request):
             return redirect('user_profile', user.pk)
     else:
         form = EventForm()
-    return render(request, 'events/event_edit.html', {'form': form})
+        return render(request, 'events/event_edit.html', {'form': form})
 
 @login_required
 def event_edit(request, pk):
     event = get_object_or_404(Event, pk=pk)
+    current_rsvps = Rsvp.objects.all().filter(event=event)
     if request.method == "POST":
-        form = EventEditForm(request.POST, instance=event)
+        form = EventForm(request.POST, instance=event)
+        invitees_keys = form['invitees'].value()
         if form.is_valid():
             event = form.save(commit=False)
             event.creator = request.user
+            event.disinvite(current_rsvps, invitees_keys)
+            event.add_invites(current_rsvps, invitees_keys)
             event.save()
             return redirect('event', pk=event.pk)
     else:
-        form = EventEditForm(instance=event)
+        form = EventForm(instance=event)
         return render(request, 'events/event_edit.html', {'form': form})
 
 @login_required
