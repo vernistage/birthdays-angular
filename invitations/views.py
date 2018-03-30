@@ -28,13 +28,14 @@ def register(request):
 
 @login_required
 def user_profile(request, pk):
-    events = Event.objects.filter(creator = request.user)
+    events = Event.objects.filter(creator=request.user)
     invitations = request.user.invited_events.all()
     invitation_count = request.user.invited_events.all().count()
+    event_count = events.count()
     to_rsvps = None
     if Rsvp.objects.filter(invitee=request.user).exists():
         to_rsvps = Rsvp.objects.filter(invitee=request.user)
-    return render(request, 'users/user_profile.html', {'events': events, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
+    return render(request, 'users/user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
 
 @login_required
 def events(request):
@@ -51,8 +52,6 @@ def event(request, pk):
     for invitee in invitees:
         if invitee.pk == user.pk:
             invitee_rsvp = Rsvp.objects.get(invitee=request.user, event=event)
-        else:
-            invitee_rsvp = None
     return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees, 'is_creator': creator, 'invitee_rsvp': invitee_rsvp})
 
 @login_required
@@ -66,7 +65,7 @@ def event_new(request):
             new_event.creator = request.user
             new_event.save()
             new_event.invite_people(invitees_keys)
-            return redirect('user_profile', user.pk)
+            return redirect('event', pk=new_event.pk)
     else:
         form = EventForm()
         return render(request, 'events/event_edit.html', {'form': form})
@@ -81,7 +80,7 @@ def event_edit(request, pk):
         if form.is_valid():
             event = form.save(commit=False)
             event.creator = request.user
-            event.disinvite(current_rsvps, invitees_keys)
+            # event.disinvite(current_rsvps, invitees_keys)
             event.add_invites(current_rsvps, invitees_keys)
             event.save()
             return redirect('event', pk=event.pk)
