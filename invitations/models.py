@@ -30,8 +30,8 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
-    def invite_people(self, invitee_pks):
-        for k in invitees_keys:
+    def invite_people(self, invitees_pks):
+        for k in invitees_pks:
             invitee = AppUser.objects.get(pk=k)
             Rsvp(event=self, invitee=invitee).save()
 
