@@ -31,7 +31,9 @@ def user_profile(request, pk):
     events = Event.objects.filter(creator = request.user)
     invitations = request.user.invited_events.all()
     invitation_count = request.user.invited_events.all().count()
-    to_rsvps = Rsvp.objects.get(invitee = request.user)
+    to_rsvps = None
+    if Rsvp.objects.filter(invitee=request.user).exists():
+        to_rsvps = Rsvp.objects.filter(invitee=request.user)
     return render(request, 'users/user_profile.html', {'events': events, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
 
 @login_required
