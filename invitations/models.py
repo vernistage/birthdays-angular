@@ -55,3 +55,6 @@ class Rsvp(models.Model):
     is_attending = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('event', 'invitee')
