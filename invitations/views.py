@@ -1,5 +1,5 @@
 from .models import Event, AppUser, Rsvp
-from .forms import EventForm, EventEditForm, RsvpEditForm
+from .forms import EventForm, EventForm, RsvpEditForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
@@ -28,11 +28,14 @@ def register(request):
 
 @login_required
 def user_profile(request, pk):
-    events = Event.objects.filter(creator = request.user)
+    events = Event.objects.filter(creator=request.user)
     invitations = request.user.invited_events.all()
     invitation_count = request.user.invited_events.all().count()
-    to_rsvps = Rsvp.objects.get(invitee = request.user)
-    return render(request, 'users/user_profile.html', {'events': events, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
+    event_count = events.count()
+    to_rsvps = None
+    if Rsvp.objects.filter(invitee=request.user).exists():
+        to_rsvps = Rsvp.objects.filter(invitee=request.user)
+    return render(request, 'users/user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
 
 @login_required
 def events(request):
@@ -43,15 +46,14 @@ def event(request, pk):
     event = Event.objects.get(pk=pk)
     invitation_count = event.invitees.all().count()
     invitees = event.invitees.all()
+    confirmed_yes = Rsvp.objects.all().filter(event=event, is_attending=True)
     user = request.user
     creator = event.is_creator(user)
     invitee_rsvp = None
     for invitee in invitees:
         if invitee.pk == user.pk:
             invitee_rsvp = Rsvp.objects.get(invitee=request.user, event=event)
-        else:
-            invitee_rsvp = None
-    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees, 'is_creator': creator, 'invitee_rsvp': invitee_rsvp})
+    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees, 'is_creator': creator, 'invitee_rsvp': invitee_rsvp, 'confirmed_yes': confirmed_yes})
 
 @login_required
 def event_new(request):
@@ -64,23 +66,27 @@ def event_new(request):
             new_event.creator = request.user
             new_event.save()
             new_event.invite_people(invitees_keys)
-            return redirect('user_profile', user.pk)
+            return redirect('event', pk=new_event.pk)
     else:
         form = EventForm()
-    return render(request, 'events/event_edit.html', {'form': form})
+        return render(request, 'events/event_edit.html', {'form': form})
 
 @login_required
 def event_edit(request, pk):
     event = get_object_or_404(Event, pk=pk)
+    current_rsvps = Rsvp.objects.all().filter(event=event)
     if request.method == "POST":
-        form = EventEditForm(request.POST, instance=event)
+        form = EventForm(request.POST, instance=event)
+        invitees_keys = form['invitees'].value()
         if form.is_valid():
             event = form.save(commit=False)
             event.creator = request.user
+            # event.disinvite(current_rsvps, invitees_keys)
+            event.add_invites(current_rsvps, invitees_keys)
             event.save()
             return redirect('event', pk=event.pk)
     else:
-        form = EventEditForm(instance=event)
+        form = EventForm(instance=event)
         return render(request, 'events/event_edit.html', {'form': form})
 
 @login_required

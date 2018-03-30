@@ -30,10 +30,21 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
-    def invite_people(invitee_pks):
+    def invite_people(self, invitees_pks):
+        for k in invitees_pks:
+            invitee = AppUser.objects.get(pk=k)
+            Rsvp(event=self, invitee=invitee).save()
+
+    def add_invites(self, current_rsvps, invitees_keys):
         for k in invitees_keys:
             invitee = AppUser.objects.get(pk=k)
-            Rsvp(event=new_event, invitee=invitee).save()
+            if not Rsvp.objects.filter(invitee=invitee).exists():
+                Rsvp(event=self, invitee=invitee).save()
+
+    def disinvite(self, current_rsvps, invitees_keys):
+        for rsvp in current_rsvps:
+            if rsvp.invitee.pk not in invitees_keys:
+                rsvp.delete()
 
     def is_creator(self, user):
         return user.pk == self.creator.pk
@@ -44,3 +55,6 @@ class Rsvp(models.Model):
     is_attending = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('event', 'invitee')
