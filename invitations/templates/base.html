@@ -6,14 +6,15 @@
     </head>
     <body>
         <div class="page-header">
-            <h2> Sarah's Birthday App </h2>
-            {% if user.is_authenticated %}
-              <p class="top-menu">Hello {{ user.username }} <small>(<a href="{% url 'logout' %}">Log out</a>)</small></p>
-            {% else %}
-              <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span>Login</a>
-              <a href="{% url 'register' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span>Register</a>
-            {% endif %}
-            <a href="{% url 'welcome' %}">Home</a>
+          <h2> Sarah's Birthday App </h2>
+          {% if user.is_authenticated %}
+            <p class="top-menu">Hello {{ user.username }} <small>(<a href="{% url 'logout' %}">Log out</a>)</small></p>
+            <a href="{% url 'user_profile' pk=user.pk %}">Profile</a>
+          {% else %}
+            <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span>Login</a>  | 
+            <a href="{% url 'register' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span>Register</a>
+          {% endif %}
+           | <a href="{% url 'welcome' %}">Home</a>
         </div>
         <div class="content container">
             <div class="row">
