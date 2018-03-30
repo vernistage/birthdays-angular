@@ -46,13 +46,14 @@ def event(request, pk):
     event = Event.objects.get(pk=pk)
     invitation_count = event.invitees.all().count()
     invitees = event.invitees.all()
+    confirmed_yes = Rsvp.objects.all().filter(event=event, is_attending=True)
     user = request.user
     creator = event.is_creator(user)
     invitee_rsvp = None
     for invitee in invitees:
         if invitee.pk == user.pk:
             invitee_rsvp = Rsvp.objects.get(invitee=request.user, event=event)
-    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees, 'is_creator': creator, 'invitee_rsvp': invitee_rsvp})
+    return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees, 'is_creator': creator, 'invitee_rsvp': invitee_rsvp, 'confirmed_yes': confirmed_yes})
 
 @login_required
 def event_new(request):
