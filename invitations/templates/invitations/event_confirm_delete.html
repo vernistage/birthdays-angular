@@ -6,6 +6,6 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" value="Delete">Confirm</button>
-    <button type="submit">Cancel</button>
+    <a href="{% url 'invitations:event' pk=event.pk%}">Cancel</a>
   </form>
 {% endblock %}
