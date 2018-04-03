@@ -66,9 +66,7 @@ class EventDetailView(DetailView):
     model = Event
 
     def get_context_data(self, **kwargs):
-        event = self.get_object()
-        user = self.request.user
-        rsvp = Rsvp.objects.get(event= event, invitee=user)
+        rsvp = Rsvp.objects.get(event=self.get_object(), invitee=self.request.user)
         context = super().get_context_data(**kwargs)
         context["attendance"] = rsvp.is_attending
         return context
@@ -78,9 +76,8 @@ class EventCreateView(CreateView):
     fields = ("title", "description", "address", "start_time", "end_time", "invitees")
 
     def form_valid(self, form):
-        user = self.request.user
         new_event = form.save(commit=False)
-        new_event.creator = user
+        new_event.creator = self.request.user
         new_event.save()
         print(new_event.invitees)
         return HttpResponseRedirect(self.get_success_url())
