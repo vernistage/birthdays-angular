@@ -62,6 +62,9 @@ class WelcomeView(TemplateView):
         context["username"] = user.username
         return context
 
+class EventListView(ListView):
+    model = Event
+
 class EventDetailView(DetailView):
     model = Event
 
@@ -84,7 +87,6 @@ class EventCreateView(CreateView):
         new_event = form.save(commit=False)
         new_event.creator = self.request.user
         new_event.save()
-        print(new_event.invitees)
         return HttpResponseRedirect(self.get_success_url())
 
 class EventUpdateView(UpdateView):
@@ -93,7 +95,7 @@ class EventUpdateView(UpdateView):
 
 class EventDeleteView(DeleteView):
     model = Event
-    success_url = reverse_lazy("user_profile", pk=request.user)
+    success_url = reverse_lazy("invitations:events")
 
 class RsvpUpdateView(UpdateView):
     model = Rsvp

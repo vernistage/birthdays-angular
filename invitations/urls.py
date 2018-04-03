@@ -2,6 +2,7 @@ from . import views
 from django.conf.urls import url
 
 urlpatterns = [
+    url(r'^events/$', views.EventListView.as_view(), name='events'),
     url(r'^events/(?P<pk>\d+)/$', views.EventDetailView.as_view(), name='event'),
     url(r'^events/create/$', views.EventCreateView.as_view(), name='create_event'),
     url(r'^events/edit/(?P<pk>\d+)/$', views.EventUpdateView.as_view(), name='update_event'),
