@@ -24,14 +24,14 @@
       </ul>
     {% endif %}
     <p>
-      <a href="{% url 'event_edit' pk=event.pk %}">Edit Event</a>
+      <a href="{% url 'invitations:event_edit' pk=event.pk %}">Edit Event</a>
     </p>
     <p>
-      <a href="{% url 'event_destroy' pk=event.pk %}">Delete Event</a>
+      <a href="{% url 'invitations:event_destroy' pk=event.pk %}">Delete Event</a>
     </p>
   {% else %}
     <h3>RSVP</h3>
-      You are attending: {{ invitee_rsvp.is_attending }}
-      <p> <a href="{% url 'rsvp_edit' pk=invitee_rsvp.pk %}">Change RSVP</a> </p>
+      You are attending: {{ attendance }}
+      <p> <a href="{% url 'invitations:update_rsvp' pk=event.pk %}">Change RSVP</a> </p>
   {% endif %}
 {% endblock %}

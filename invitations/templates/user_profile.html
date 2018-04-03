@@ -8,14 +8,14 @@
       <li>birthday: {{ user.birth_date }}</li>
     </ul>
   <h2>{{ user.username|capfirst }}'s Events</h2>
-  <a href="{% url 'event_new' %}">Create new event</a>
+  <a href="{% url 'invitations:create_event' %}">Create new event</a>
   <h3>Events you created</h3>
   {% if event_count <= 0 %}
     <p>No events yet</p>
   {% else %}
     <ul>
       {% for event in events %}
-        <li><a href="{% url 'event' pk=event.pk %}">{{ event.title }}</a>
+        <li><a href="{% url 'invitations:event' pk=event.pk %}">{{ event.title }}</a>
       {% endfor %}
     </ul>
   {% endif %}
@@ -25,7 +25,7 @@
   {% else %}
     <ul>
       {% for invitation in invitations %}
-        <li><a href="{% url 'event' pk=invitation.pk %}">{{ invitation.title }}</a>
+        <li><a href="{% url 'invitations:event' pk=invitation.pk %}">{{ invitation.title }}</a>
       {% endfor %}
     </ul>
   {% endif %}

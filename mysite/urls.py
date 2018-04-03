@@ -21,6 +21,8 @@ from invitations import views as invitations_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^register/$', invitations_views.register, name='register'),
+    url(r'^$', invitations_views.WelcomeView.as_view(), name='welcome'),
+    url(r'^user/(?P<pk>\d+)/$', invitations_views.user_profile, name='user_profile'),
     url(r'^accounts/login/$', views.login, {'template_name': 'registration/login.html'}, name='login'),
     url(r'^accounts/logout/$', views.logout, name="logout", kwargs={'next_page': '/'}),
     url(r'', include('invitations.urls', namespace="invitations")),

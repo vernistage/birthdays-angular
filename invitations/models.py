@@ -65,3 +65,6 @@ class Rsvp(models.Model):
 
     class Meta:
         unique_together = ('event', 'invitee')
+
+    def get_absolute_url(self):
+        return reverse("invitations:event", kwargs={"pk": self.event.pk})

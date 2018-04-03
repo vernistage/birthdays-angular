@@ -20,9 +20,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import (
     View, TemplateView,
     ListView, DetailView,
-    CreateView, UpdateView, DeleteView
+    CreateView, UpdateView,
+    DeleteView
 )
-
 from .forms import SignUpForm
 
 User = get_user_model()
@@ -60,10 +60,18 @@ def user_profile(request, pk):
     to_rsvps = None
     if Rsvp.objects.filter(invitee=request.user).exists():
         to_rsvps = Rsvp.objects.filter(invitee=request.user)
-    return render(request, 'users/user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
+    return render(request, 'user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
 
 class EventDetailView(DetailView):
     model = Event
+
+    def get_context_data(self, **kwargs):
+        event = self.get_object()
+        user = self.request.user
+        rsvp = Rsvp.objects.get(event= event, invitee=user)
+        context = super().get_context_data(**kwargs)
+        context["attendance"] = rsvp.is_attending
+        return context
 
 class EventCreateView(CreateView):
     model = Event
@@ -77,39 +85,10 @@ class EventCreateView(CreateView):
         print(new_event.invitees)
         return HttpResponseRedirect(self.get_success_url())
 
-class EventView(DetailView):
-    True
+class RsvpUpdateView(UpdateView):
+    model = Rsvp
+    fields = ("is_attending",)
 
-    # def event(request, pk):
-    #     event = Event.objects.get(pk=pk)
-    #     invitation_count = event.invitees.all().count()
-    #     invitees = event.invitees.all()
-    #     confirmed_yes = Rsvp.objects.all().filter(event=event, is_attending=True)
-    #     user = request.user
-    #     creator = event.is_creator(user)
-    #     invitee_rsvp = None
-    #     for invitee in invitees:
-    #         if invitee.pk == user.pk:
-    #             invitee_rsvp = Rsvp.objects.get(invitee=request.user, event=event)
-    #     return render(request, 'events/event.html', {'event': event, 'invitation_count': invitation_count, 'invitees': invitees, 'is_creator': creator, 'invitee_rsvp': invitee_rsvp, 'confirmed_yes': confirmed_yes})
-    #
-    # @login_required
-    # def event_destroy(request, pk):
-    #     event = get_object_or_404(Event, pk=pk)
-    #     event.delete()
-    #     return redirect('user_profile', request.user.pk)
-
-class RsvpView(View):
-    @login_required
-    def rsvp_edit(request, pk):
-        rsvp = get_object_or_404(Rsvp, pk=pk)
-        event = rsvp.event
-        if request.method == "POST":
-            form = RsvpEditForm(request.POST, instance=rsvp)
-            if form.is_valid():
-                rsvp_update = form.save(commit=False)
-                rsvp_update.save()
-                return redirect('event', pk=event.pk)
-        else:
-            form = RsvpEditForm(instance=rsvp)
-            return render(request, 'events/rsvp_edit.html', {'form': form, 'event':event})
+    def form_valid(self, form):
+        rsvp = form.save()
+        return HttpResponseRedirect(self.get_success_url())
