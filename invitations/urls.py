@@ -1,9 +1,9 @@
 from . import views
 from django.conf.urls import url
-from invitations.views import EventView, RsvpView
+from invitations.views import EventView, RsvpView, WelcomeView
 
 urlpatterns = [
-    url(r'^$', views.welcome, name='welcome'),
+    url(r'^$', views.WelcomeView.as_view(), name='welcome'),
     url(r'^user/(?P<pk>\d+)/$', views.user_profile, name='user_profile'),
     url(r'^event/(?P<pk>\d+)/$', views.EventView.as_view(), name='event'),
     url(r'^event/new/$', views.EventView.as_view(), name='event_new'),

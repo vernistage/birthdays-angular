@@ -5,14 +5,21 @@ from django.contrib.auth import login, authenticate, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.views import View
+from django.views.generic import View, TemplateView
 
 from .forms import SignUpForm
 
 User = get_user_model()
 
-def welcome(request):
-    return render(request, 'welcome.html')
+class WelcomeView(TemplateView):
+    template_name = 'welcome.html'
+    # https://teamtreehouse.com/library/templateview
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        context = super().get_context_data(**kwargs)
+        context["authenticated"] = user.is_authenticated
+        context["username"] = user.username
+        return context
 
 def register(request):
     if request.method == 'POST':
