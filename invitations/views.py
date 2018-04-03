@@ -93,8 +93,8 @@ class EventUpdateView(UpdateView):
 
 class EventDeleteView(DeleteView):
     model = Event
-    success_url = reverse_lazy("")
-    
+    success_url = reverse_lazy("user_profile", pk=request.user)
+
 class RsvpUpdateView(UpdateView):
     model = Rsvp
     fields = ("is_attending",)
