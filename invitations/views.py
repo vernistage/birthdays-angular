@@ -38,10 +38,6 @@ def user_profile(request, pk):
     return render(request, 'users/user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
 
 @login_required
-def events(request):
-    return True
-
-@login_required
 def event(request, pk):
     event = Event.objects.get(pk=pk)
     invitation_count = event.invitees.all().count()
