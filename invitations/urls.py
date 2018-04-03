@@ -5,9 +5,6 @@ from invitations.views import EventView, RsvpView, WelcomeView
 urlpatterns = [
     url(r'^$', views.WelcomeView.as_view(), name='welcome'),
     url(r'^user/(?P<pk>\d+)/$', views.user_profile, name='user_profile'),
-    url(r'^event/(?P<pk>\d+)/$', views.EventView.as_view(), name='event'),
-    url(r'^event/new/$', views.EventView.as_view(), name='event_new'),
-    url(r'^event/(?P<pk>\d+)/edit/$', views.EventView.as_view(), name='event_edit'),
-    url(r'^event/(?P<pk>\d+)/destroy/$', views.EventView.as_view(), name='event_destroy'),
-    url(r'^rsvp/(?P<pk>\d+)/edit/$', views.RsvpView.as_view(), name='rsvp_edit'),
+    url(r'^events/create/$', views.EventCreateView.as_view(), name='create_event'),
+    url(r'^events/(?P<pk>\d+)/$', views.EventDetailView.as_view(), name='event'),
 ]

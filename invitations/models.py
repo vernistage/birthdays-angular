@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from django.core.urlresolvers import reverse
 
 class AppUser(AbstractUser):
     birth_date = models.DateField(blank=True, null=True)
@@ -29,6 +30,12 @@ class Event(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("invitations:event", kwargs={"pk": self.pk})
 
     def invite_people(self, invitees_pks):
         for k in invitees_pks:
