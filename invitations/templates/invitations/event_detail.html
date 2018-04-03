@@ -24,10 +24,10 @@
       </ul>
     {% endif %}
     <p>
-      <a href="{% url 'invitations:event_edit' pk=event.pk %}">Edit Event</a>
+      <a href="{% url 'invitations:update_event' pk=event.pk %}">Edit Event</a>
     </p>
     <p>
-      <a href="{% url 'invitations:event_destroy' pk=event.pk %}">Delete Event</a>
+      <a href="{% url 'invitations:destroy_event' pk=event.pk %}">Delete Event</a>
     </p>
   {% else %}
     <h3>RSVP</h3>

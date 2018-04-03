@@ -24,19 +24,9 @@ from django.views.generic import (
     DeleteView
 )
 from .forms import SignUpForm
+from django.core.urlresolvers import reverse_lazy
 
 User = get_user_model()
-
-class WelcomeView(TemplateView):
-    template_name = 'welcome.html'
-    # https://teamtreehouse.com/library/templateview
-    def get_context_data(self, **kwargs):
-        user = self.request.user
-        context = super().get_context_data(**kwargs)
-        context["authenticated"] = user.is_authenticated
-        context["username"] = user.username
-        return context
-
 def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -47,9 +37,9 @@ def register(request):
             user = authenticate(username=username, password=raw_password)
             login (request, user)
             return redirect('user_profile', user.pk)
-    else:
-        form = SignUpForm()
-    return render(request, 'users/register.html', {'form': form})
+        else:
+            form = SignUpForm()
+            return render(request, 'users/register.html', {'form': form})
 
 @login_required
 def user_profile(request, pk):
@@ -60,15 +50,30 @@ def user_profile(request, pk):
     to_rsvps = None
     if Rsvp.objects.filter(invitee=request.user).exists():
         to_rsvps = Rsvp.objects.filter(invitee=request.user)
-    return render(request, 'user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
+        return render(request, 'user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
+
+class WelcomeView(TemplateView):
+    template_name = 'welcome.html'
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        context = super().get_context_data(**kwargs)
+        context["authenticated"] = user.is_authenticated
+        context["username"] = user.username
+        return context
 
 class EventDetailView(DetailView):
     model = Event
 
     def get_context_data(self, **kwargs):
-        rsvp = Rsvp.objects.get(event=self.get_object(), invitee=self.request.user)
+        event = self.get_object()
+        user = self.request.user
         context = super().get_context_data(**kwargs)
-        context["attendance"] = rsvp.is_attending
+        context["is_creator"] = (event.creator == user)
+        try:
+            context["attendance"] = Rsvp.objects.get(event=event, invitee=user).is_attending
+        except:
+            context["attendance"] = "Error"
         return context
 
 class EventCreateView(CreateView):
@@ -82,6 +87,14 @@ class EventCreateView(CreateView):
         print(new_event.invitees)
         return HttpResponseRedirect(self.get_success_url())
 
+class EventUpdateView(UpdateView):
+    model = Event
+    fields = ("title", "description", "address", "start_time", "end_time", "invitees")
+
+class EventDeleteView(DeleteView):
+    model = Event
+    success_url = reverse_lazy("")
+    
 class RsvpUpdateView(UpdateView):
     model = Rsvp
     fields = ("is_attending",)
