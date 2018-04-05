@@ -12,7 +12,7 @@
     {% else %}
       <h3>Invited:</h3>
       <ul>
-        {% for invitee in invitees %}
+        {% for invitee in event.get_invitees %}
           <li>{{ invitee.username }}</li>
         {% endfor %}
       </ul>
