@@ -34,27 +34,15 @@ class Event(models.Model):
     def __str__(self):
         return self.title
 
+    def is_creator(self, user):
+        return user.pk == self.creator.pk
+
     def get_absolute_url(self):
         return reverse("invitations:event", kwargs={"pk": self.pk})
 
-    def invite_people(self, invitees_pks):
-        for k in invitees_pks:
-            invitee = AppUser.objects.get(pk=k)
-            Rsvp(event=self, invitee=invitee).save()
+    def get_invitees(self):
+        return self.invitees.all()
 
-    def add_invites(self, current_rsvps, invitees_keys):
-        for k in invitees_keys:
-            invitee = AppUser.objects.get(pk=k)
-            if not Rsvp.objects.filter(invitee=invitee).exists():
-                Rsvp(event=self, invitee=invitee).save()
-
-    def disinvite(self, current_rsvps, invitees_keys):
-        for rsvp in current_rsvps:
-            if rsvp.invitee.pk not in invitees_keys:
-                rsvp.delete()
-
-    def is_creator(self, user):
-        return user.pk == self.creator.pk
 
 class Rsvp(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
