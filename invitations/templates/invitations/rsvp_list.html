@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Invitations to you</h1>
+  <ul>
+    {% for rsvp in rsvp_list %}
+      <li>
+        <a href="{% url 'invitations:event' pk=rsvp.event.pk %}">{{ rsvp.event.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
