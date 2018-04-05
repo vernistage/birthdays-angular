@@ -43,7 +43,7 @@ class Event(models.Model):
         return self.title
 
     def is_creator(self, user):
-        return user.pk == self.creator.pk
+        user.pk == self.creator.pk
 
     def get_absolute_url(self):
         return reverse("invitations:event", kwargs={"pk": self.pk})

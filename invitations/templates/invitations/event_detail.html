@@ -11,13 +11,13 @@
     {% if invitation_count <= 0 %}
       <h3>Invite People!</h3>
     {% else %}
-      <h3>Invited:</h3>
+      <h3>You invited:</h3>
       <ul>
         {% for invitee in event.get_invitees %}
           <li>{{ invitee.username }}</li>
         {% endfor %}
       </ul>
-      <h3>Going:</h3>
+      <h3>Who's going:</h3>
       <ul>
         {% for yes in confirmed_yes %}
           <li>{{ yes.invitee.username }}</li>

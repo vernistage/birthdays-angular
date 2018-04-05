@@ -45,15 +45,6 @@ def register(request):
 
 class AppUserDetailView(DetailView):
     model = AppUser
-# def user_profile(request, pk):
-#     events = Event.objects.filter(creator=request.user)
-#     invitations = request.user.invited_events.all()
-#     invitation_count = request.user.invited_events.all().count()
-#     event_count = events.count()
-#     to_rsvps = None
-#     if Rsvp.objects.filter(invitee=request.user).exists():
-#         to_rsvps = Rsvp.objects.filter(invitee=request.user)
-#         return render(request, 'user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
 
 class WelcomeView(TemplateView):
     template_name = 'welcome.html'
@@ -67,6 +58,12 @@ class WelcomeView(TemplateView):
 
 class EventListView(ListView):
     model = Event
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        context = super().get_context_data(**kwargs)
+        context["event_list"] = Event.objects.filter(creator=user)
+        return context
 
 class EventDetailView(DetailView):
     model = Event
@@ -91,7 +88,10 @@ class EventCreateView(CreateView):
     def form_valid(self, form):
         new_event = form.save(commit=False)
         new_event.creator = self.request.user
+        print(new_event.invitees)
         new_event.save()
+        for person in form.cleaned_data['invitees']:
+            Rsvp.objects.get_or_create(invitee=person, event=new_event)
         self.object = new_event
         return HttpResponseRedirect(self.get_success_url())
 
