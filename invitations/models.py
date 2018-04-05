@@ -13,6 +13,9 @@ class AppUser(AbstractUser):
         through_fields=('invitee', 'event'),
     )
 
+    def __str__(self):
+        return self.first_name
+
 class Event(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -30,6 +33,11 @@ class Event(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
+
+    def clean_invitees(self):
+        data = self.cleaned_data['invitees']
+        invitees.exclude(self.creator)
+        return data
 
     def __str__(self):
         return self.title

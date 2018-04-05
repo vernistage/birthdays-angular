@@ -76,8 +76,10 @@ class EventDetailView(DetailView):
         user = self.request.user
         context = super().get_context_data(**kwargs)
         context["is_creator"] = (event.creator == user)
+        context["is_invited"] = (user in event.invitees.all())
         try:
-            context["attendance"] = Rsvp.objects.get(event=event, invitee=user).is_attending
+            context["rsvp"] = Rsvp.objects.get(event=event, invitee=user)
+            context["attendance"] = context["rsvp"].is_attending
         except:
             context["attendance"] = "Error"
         return context

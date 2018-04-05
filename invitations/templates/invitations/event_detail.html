@@ -2,6 +2,7 @@
 
 {% block content %}
   <h2>{{ event.title }}</h2>
+    <p>created by: {{ event.creator }}</p>
     <p>description: {{ event.description }}</p>
     <p>address: {{ event.address }}</p>
     <p>start: {{ event.start_time }}</p>
@@ -29,9 +30,9 @@
     <p>
       <a href="{% url 'invitations:destroy_event' pk=event.pk %}">Delete Event</a>
     </p>
-  {% else %}
+  {% elif is_invited %}
     <h3>RSVP</h3>
       You are attending: {{ attendance }}
-      <p> <a href="{% url 'invitations:update_rsvp' pk=event.pk %}">Change RSVP</a> </p>
+      <p> <a href="{% url 'invitations:update_rsvp' pk=rsvp.pk %}">Change RSVP</a> </p>
   {% endif %}
 {% endblock %}
