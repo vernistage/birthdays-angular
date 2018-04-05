@@ -24,9 +24,11 @@ from django.views.generic import (
     DeleteView
 )
 from .forms import SignUpForm
+from django.views.generic.edit import ModelFormMixin
 from django.core.urlresolvers import reverse_lazy
 
 User = get_user_model()
+
 def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -41,16 +43,17 @@ def register(request):
             form = SignUpForm()
             return render(request, 'users/register.html', {'form': form})
 
-@login_required
-def user_profile(request, pk):
-    events = Event.objects.filter(creator=request.user)
-    invitations = request.user.invited_events.all()
-    invitation_count = request.user.invited_events.all().count()
-    event_count = events.count()
-    to_rsvps = None
-    if Rsvp.objects.filter(invitee=request.user).exists():
-        to_rsvps = Rsvp.objects.filter(invitee=request.user)
-        return render(request, 'user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
+class AppUserDetailView(DetailView):
+    model = AppUser
+# def user_profile(request, pk):
+#     events = Event.objects.filter(creator=request.user)
+#     invitations = request.user.invited_events.all()
+#     invitation_count = request.user.invited_events.all().count()
+#     event_count = events.count()
+#     to_rsvps = None
+#     if Rsvp.objects.filter(invitee=request.user).exists():
+#         to_rsvps = Rsvp.objects.filter(invitee=request.user)
+#         return render(request, 'user_profile.html', {'events': events, 'event_count': event_count, 'invitations': invitations, 'invitation_count': invitation_count, 'to_rsvps': to_rsvps})
 
 class WelcomeView(TemplateView):
     template_name = 'welcome.html'
@@ -87,15 +90,25 @@ class EventCreateView(CreateView):
         new_event = form.save(commit=False)
         new_event.creator = self.request.user
         new_event.save()
+        self.object = new_event
         return HttpResponseRedirect(self.get_success_url())
 
 class EventUpdateView(UpdateView):
     model = Event
     fields = ("title", "description", "address", "start_time", "end_time", "invitees")
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        for person in form.cleaned_data['invitees']:
+            Rsvp.objects.get_or_create(invitee=person, event=self.object)
+        return super(ModelFormMixin, self).form_valid(form)
+
 class EventDeleteView(DeleteView):
     model = Event
     success_url = reverse_lazy("invitations:events")
+
+class RsvpListView(ListView):
+    model = Rsvp
 
 class RsvpUpdateView(UpdateView):
     model = Rsvp
