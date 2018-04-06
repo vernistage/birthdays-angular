@@ -1,13 +1,12 @@
-from django.conf.urls import url
 from . import views
+from django.conf.urls import url
 
 urlpatterns = [
-    url(r'^$', views.welcome, name='welcome'),
-    url(r'^user/(?P<pk>\d+)/$', views.user_profile, name='user_profile'),
-    url(r'^events/$', views.events, name='events'),
-    url(r'^event/(?P<pk>\d+)/$', views.event, name='event'),
-    url(r'^event/new/$', views.event_new, name='event_new'),
-    url(r'^event/(?P<pk>\d+)/edit/$', views.event_edit, name='event_edit'),
-    url(r'^event/(?P<pk>\d+)/destroy/$', views.event_destroy, name='event_destroy'),
-    url(r'^rsvp/(?P<pk>\d+)/edit/$', views.rsvp_edit, name='rsvp_edit'),
+    url(r'^events/$', views.EventListView.as_view(), name='events'),
+    url(r'^events/(?P<pk>\d+)/$', views.EventDetailView.as_view(), name='event'),
+    url(r'^events/create/$', views.EventCreateView.as_view(), name='create_event'),
+    url(r'^events/edit/(?P<pk>\d+)/$', views.EventUpdateView.as_view(), name='update_event'),
+    url(r'^events/destroy/(?P<pk>\d+)/$', views.EventDeleteView.as_view(), name='destroy_event'),
+    url(r'^rsvps/$', views.RsvpListView.as_view(), name='rsvps'),
+    url(r'^rsvps/edit/(?P<pk>\d+)$', views.RsvpUpdateView.as_view(), name='update_rsvp'),
 ]

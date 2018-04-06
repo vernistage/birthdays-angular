@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ user.username|capfirst }}'s Profile</h1>
+    <ul>
+      <li>name: {{ user.first_name}}</li>
+      <li>email: {{ user.email}}</li>
+      <li>birthday: {{ user.birth_date }}</li>
+    </ul>
+  <h2>{{ user.username|capfirst }}'s Events</h2>
+  <a href="{% url 'invitations:create_event' %}">Create new event</a>
+  <h3>Events you created</h3>
+    <a href="{% url 'invitations:events' %}">Manage your events</a>
+  <h3>Invitations to you</h3>
+    <a href="{% url 'invitations:rsvps' %}">Invitations to you</a>
+{% endblock %}

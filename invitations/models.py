@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from django.core.urlresolvers import reverse
 
 class AppUser(AbstractUser):
     birth_date = models.DateField(blank=True, null=True)
@@ -11,6 +12,9 @@ class AppUser(AbstractUser):
         through='Rsvp',
         through_fields=('invitee', 'event'),
     )
+
+    def __str__(self):
+        return self.first_name
 
 class Event(models.Model):
     title = models.CharField(max_length=100)
@@ -30,24 +34,23 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
 
-    def invite_people(self, invitees_pks):
-        for k in invitees_pks:
-            invitee = AppUser.objects.get(pk=k)
-            Rsvp(event=self, invitee=invitee).save()
+    def clean_invitees(self):
+        data = self.cleaned_data['invitees']
+        invitees.exclude(self.creator)
+        return data
 
-    def add_invites(self, current_rsvps, invitees_keys):
-        for k in invitees_keys:
-            invitee = AppUser.objects.get(pk=k)
-            if not Rsvp.objects.filter(invitee=invitee).exists():
-                Rsvp(event=self, invitee=invitee).save()
-
-    def disinvite(self, current_rsvps, invitees_keys):
-        for rsvp in current_rsvps:
-            if rsvp.invitee.pk not in invitees_keys:
-                rsvp.delete()
+    def __str__(self):
+        return self.title
 
     def is_creator(self, user):
-        return user.pk == self.creator.pk
+        user.pk == self.creator.pk
+
+    def get_absolute_url(self):
+        return reverse("invitations:event", kwargs={"pk": self.pk})
+
+    def get_invitees(self):
+        return self.invitees.all()
+
 
 class Rsvp(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
@@ -58,3 +61,6 @@ class Rsvp(models.Model):
 
     class Meta:
         unique_together = ('event', 'invitee')
+
+    def get_absolute_url(self):
+        return reverse("invitations:event", kwargs={"pk": self.event.pk})
