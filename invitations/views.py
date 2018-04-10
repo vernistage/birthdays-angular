@@ -85,10 +85,15 @@ class EventCreateView(CreateView):
     model = Event
     fields = ("title", "description", "address", "start_time", "end_time", "invitees")
 
+    # Exclude creator from invitees
+    def get_form(self, form_class=None):
+        form = super(EventCreateView, self).get_form(form_class)
+        form.fields["invitees"].queryset = AppUser.objects.all().exclude(pk=self.request.user.pk)
+        return form
+
     def form_valid(self, form):
         new_event = form.save(commit=False)
         new_event.creator = self.request.user
-        print(new_event.invitees)
         new_event.save()
         for person in form.cleaned_data['invitees']:
             Rsvp.objects.get_or_create(invitee=person, event=new_event)
@@ -98,6 +103,12 @@ class EventCreateView(CreateView):
 class EventUpdateView(UpdateView):
     model = Event
     fields = ("title", "description", "address", "start_time", "end_time", "invitees")
+
+    # Exclude creator from invitees
+    def get_form(self, form_class=None):
+        form = super(EventUpdateView, self).get_form(form_class)
+        form.fields["invitees"].queryset = AppUser.objects.all().exclude(pk=self.request.user.pk)
+        return form
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
