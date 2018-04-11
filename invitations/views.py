@@ -39,9 +39,9 @@ def register(request):
             user = authenticate(username=username, password=raw_password)
             login (request, user)
             return redirect('user_profile', user.pk)
-        else:
-            form = SignUpForm()
-            return render(request, 'users/register.html', {'form': form})
+    else:
+        form = SignUpForm()
+        return render(request, 'invitations/register.html', {'form': form})
 
 class AppUserDetailView(DetailView):
     model = AppUser

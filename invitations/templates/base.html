@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <html>
     <head>
         <title>Sarah's Birthday App</title>
@@ -5,18 +6,36 @@
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     </head>
     <body>
-        <div class="page-header">
+        <div class="container-fluid page-header">
           <h2> Sarah's Birthday App </h2>
+          <p class="text-left">
           {% if user.is_authenticated %}
             <p class="top-menu">Hello {{ user.username }} <small>(<a href="{% url 'logout' %}">Log out</a>)</small></p>
             <a href="{% url 'user_profile' pk=user.pk %}">Profile</a>
           {% else %}
-            <a href="{% url 'login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span>Login</a>  |
-            <a href="{% url 'register' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span>Register</a>
+            <a href="{% url 'login' %}" class="top-menu" role="button">
+              <button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-lock"></span>
+                Login
+              </button>
+            </a>
+            <a href="{% url 'register' %}" class="top-menu" role="button">
+              <button type="button" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-lock"></span>
+                Register
+              </button>
+            </a>
+          </p>
           {% endif %}
-           | <a href="{% url 'welcome' %}">Home</a>
+          <p class="text-right">
+            <a href="{% url 'welcome' %}" role="button">
+              <button type="button" class="btn btn-default btn-sm btn-info">
+                Home
+              </button>
+            </a>
+          </p>
         </div>
-        <div class="content container">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-md-8">
                 {% block content %}
