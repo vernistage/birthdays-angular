@@ -3,9 +3,9 @@
 {% block content %}
   <h1>Invitations to you</h1>
   <ul>
-    {% for rsvp in rsvp_list %}
+    {% for event in event_list %}
       <li>
-        <a href="{% url 'invitations:event' pk=rsvp.event.pk %}">{{ rsvp.event.title }}</a>
+        <a href="{% url 'invitations:event' pk=event.pk %}">{{ event.title }}</a>
       </li>
     {% endfor %}
   </ul>

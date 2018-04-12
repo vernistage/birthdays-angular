@@ -123,6 +123,12 @@ class EventDeleteView(DeleteView):
 class RsvpListView(ListView):
     model = Rsvp
 
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        context = super().get_context_data(**kwargs)
+        context["event_list"] = user.invited_events.all()
+        return context
+
 class RsvpUpdateView(UpdateView):
     model = Rsvp
     fields = ("is_attending",)
