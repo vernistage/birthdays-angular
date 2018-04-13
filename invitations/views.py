@@ -39,9 +39,9 @@ def register(request):
             user = authenticate(username=username, password=raw_password)
             login (request, user)
             return redirect('user_profile', user.pk)
-        else:
-            form = SignUpForm()
-            return render(request, 'users/register.html', {'form': form})
+    else:
+        form = SignUpForm()
+        return render(request, 'invitations/register.html', {'form': form})
 
 class AppUserDetailView(DetailView):
     model = AppUser
@@ -122,6 +122,12 @@ class EventDeleteView(DeleteView):
 
 class RsvpListView(ListView):
     model = Rsvp
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        context = super().get_context_data(**kwargs)
+        context["event_list"] = user.invited_events.all()
+        return context
 
 class RsvpUpdateView(UpdateView):
     model = Rsvp

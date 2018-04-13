@@ -6,7 +6,17 @@
     <h2>Hello {{ username }}</h2>
     <a href="{% url 'user_profile' pk=user.pk %}">Click here to view your events</a>
   {% else %}
-    <a href="{% url 'login' %}">Login</a>  |
-    <a href="{% url 'register' %}">Register</a>
+    <a href="{% url 'login' %}" class="top-menu" role="button">
+      <button type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-lock"></span>
+        Login
+      </button>
+    </a>
+    <a href="{% url 'register' %}" class="top-menu" role="button">
+      <button type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-lock"></span>
+        Register
+      </button>
+    </a>
   {% endif %}
 {% endblock %}
