@@ -7,33 +7,42 @@
     </head>
     <body>
         <div class="container-fluid page-header">
-          <h2> Sarah's Birthday App </h2>
-          <p class="text-left">
-          {% if user.is_authenticated %}
-            <p class="top-menu">Hello {{ user.username }} <small>(<a href="{% url 'logout' %}">Log out</a>)</small></p>
-            <a href="{% url 'user_profile' pk=user.pk %}">Profile</a>
-          {% else %}
-            <a href="{% url 'login' %}" class="top-menu" role="button">
-              <button type="button" class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-lock"></span>
-                Login
-              </button>
-            </a>
-            <a href="{% url 'register' %}" class="top-menu" role="button">
-              <button type="button" class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-lock"></span>
-                Register
-              </button>
-            </a>
-          </p>
-          {% endif %}
-          <p class="text-right">
-            <a href="{% url 'welcome' %}" role="button">
-              <button type="button" class="btn btn-default btn-sm btn-info">
-                Home
-              </button>
-            </a>
-          </p>
+          <h2 class="text-center"> Sarah's Birthday App </h2>
+          <ul class="nav nav-pills">
+            {% if user.is_authenticated %}
+              <p class="text-right">
+                <li role="presentation">
+                  <a href="{% url 'logout' %}">Log out</a>
+                </li>
+                <li role="presentation">
+                  <a href="{% url 'user_profile' pk=user.pk %}">Profile</a>
+                </li>
+              </p>
+              <p class="text-left">
+                <li role="presentation">
+                  Hello {{ user.username }}
+                </li>
+              </p>
+            {% else %}
+              <p class="text-right">
+                <li role="presentation">
+                  <a href="{% url 'login' %}" class="top-menu">
+                      Sign in
+                  </a>
+                </li>
+                <li role="presentation">
+                  <a href="{% url 'register' %}" class="top-menu">
+                      Register
+                  </a>
+                </li>
+                <li role="presentation">
+                  <a href="{% url 'welcome' %}">
+                    Home
+                  </a>
+                </li>
+              </p>
+            {% endif %}
+          </ul>
         </div>
         <div class="container-fluid">
             <div class="row">
