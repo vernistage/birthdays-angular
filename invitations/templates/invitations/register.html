@@ -1,10 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Register</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign up</button>
-  </form>
+  <div class="container-fluid text-center">
+    <h1>Register</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="fieldWrapper">
+          {{ form.username.errors }}
+          <label for="{{ form.username.id_username }}">Username:</label>
+          {{ form.username }}
+      </div>
+      <div class="fieldWrapper">
+          {{ form.first_name.errors }}
+          <label for="{{ form.first_name.id_first_name }}">First name:</label>
+          {{ form.first_name }}
+      </div>
+      <div class="fieldWrapper">
+          {{ form.last_name.errors }}
+          <label for="{{ form.last_name.id_last_name }}">Last name:</label>
+          {{ form.last_name }}
+      </div>
+      <div class="fieldWrapper">
+          {{ form.email.errors }}
+          <label for="{{ form.email.id_email }}">Email:</label>
+          {{ form.email }}
+      </div>
+      <div class="fieldWrapper">
+          {{ form.birth_date.errors }}
+          <label for="{{ form.birth_date.id_birth_date }}">Birthday:</label>
+          {{ form.birth_date }}
+      </div>
+      <div class="fieldWrapper">
+          {{ form.password1.errors }}
+          <label for="{{ form.password1.id_password1 }}">Password:</label>
+          {{ form.password1 }}
+      </div>
+      <div class="fieldWrapper">
+          {{ form.password2.errors }}
+          <label for="{{ form.password2.id_password2 }}">Confirm password:</label>
+          {{ form.password2 }}
+      </div>
+      <button type="submit">Sign up</button>
+    </form>
+  </div>
 {% endblock %}
