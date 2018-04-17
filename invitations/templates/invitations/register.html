@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="container-fluid text-center">
+  <div class="container text-center">
     <h1>Register</h1>
     <form method="post">
       {% csrf_token %}
@@ -10,12 +10,12 @@
         <div class="form-group col-md-6">
           {{ form.first_name.errors }}
           <label for="{{ form.first_name.id_first_name }}">First name:</label>
-          <div class="form-control">{{ form.first_name }} </div>
+          {{ form.first_name }}
         </div>
         <div class="form-group col-md-6">
           {{ form.last_name.errors }}
           <label for="{{ form.last_name.id_last_name }}">Last name:</label>
-          <div class="form-control">{{ form.last_name }}</div>
+          {{ form.last_name }}
         </div>
       </div>
       <div class="form-row">
