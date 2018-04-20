@@ -1,8 +1,10 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from invitations.models import AppUser, Event, Rsvp
 from django.utils import timezone
 
-# Create your tests here.
+# HTTP Tests
+c = Client()
+# Model Tests
 
 class AppUserTestCase(TestCase):
     def setUp(self):
