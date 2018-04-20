@@ -7,33 +7,33 @@ class AppUserTestCase(TestCase):
         AppUser.objects.create(
             first_name="Test",
             last_name="User",
-            birth_date="10/25/2006",
+            birth_date="2006-10-25",
             username="username",
-            password1="password")
+            password="password")
         AppUser.objects.create(
             first_name="Test1",
             last_name="User1",
-            birth_date="1/25/2005",
+            birth_date="2005-1-25",
             username="username1",
-            password1="password")
+            password="password")
 
-    def users_have_first_name(self):
+    def test_users_have_first_name(self):
         test = AppUser.objects.get(username="username")
         test1 = AppUser.objects.get(username="username1")
-        self.assertEqual(test.first_name(), "Test")
-        self.assertEqual(test1.first_name(), "Test1")
+        self.assertEqual(test.first_name, "Test")
+        self.assertEqual(test1.first_name, "Test1")
 
-    def users_have_last_name(self):
+    def test_users_have_last_name(self):
         test = AppUser.objects.get(username="username")
         test1 = AppUser.objects.get(username="username1")
-        self.assertEqual(test.last_name(), "User")
-        self.assertEqual(test1.last_name(), "User1")
+        self.assertEqual(test.last_name, "User")
+        self.assertEqual(test1.last_name, "User1")
 
-    def users_have_birthdays(self):
+    def test_users_have_birthdays(self):
         test = AppUser.objects.get(username="username")
         test1 = AppUser.objects.get(username="username1")
-        self.assertEqual(test.birth_date(), "10/25/2006")
-        self.assertEqual(test1.birth_date(), "1/25/2005")
+        self.assertEqual(str(test.birth_date), '2006-10-25')
+        self.assertEqual(str(test1.birth_date), '2005-01-25')
 
 # class EventTestCase(TestCase):
 #     def setUp(self):
