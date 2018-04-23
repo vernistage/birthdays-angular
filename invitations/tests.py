@@ -20,6 +20,18 @@ class HTTPLoggedOut(TestCase):
         self.assertContains(response, "Register")
         self.assertContains(response, "Sign up")
 
+    def test_profile(self):
+        response = self.client.get('/user/1')
+        self.assertEqual(response.status_code, 301)
+
+    def test_event__create_page(self):
+        response = self.client.get('/events/create/')
+        self.assertEqual(response.status_code, 301)
+
+    def test_events(self):
+        response = self.client.get('/events/')
+        self.assertEqual(response.status_code, 301)
+
 class HTTPLoggedIn(TestCase):
     def setUp(self):
         user = AppUser.objects.create(username='testuser')
@@ -31,6 +43,10 @@ class HTTPLoggedIn(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Profile")
         self.assertContains(response, "Log out")
+
+    def test_profile(self):
+        response = self.client.get('/user/1')
+        self.assertEqual(response.status_code, 200)
 
 # Model Tests
 class AppUserTestCase(TestCase):
