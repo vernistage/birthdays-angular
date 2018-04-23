@@ -22,17 +22,15 @@ class HTTPLoggedOut(TestCase):
 
 class HTTPLoggedIn(TestCase):
     def setUp(self):
+        user = AppUser.objects.create(username='testuser')
         self.client = Client()
+        self.client.force_login(user, backend=None)
 
-    def test_login(self):
-        # Issue a GET request.
-        response = self.client.get('/customer/details/')
-
-        # Check that the response is 200 OK.
+    def test_welcome(self):
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-
-        # Check that the rendered context contains 5 customers.
-        self.assertEqual(len(response.context['customers']), 5)
+        self.assertContains(response, "Profile")
+        self.assertContains(response, "Log out")
 
 # Model Tests
 class AppUserTestCase(TestCase):
