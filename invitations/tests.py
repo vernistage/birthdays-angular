@@ -3,9 +3,38 @@ from invitations.models import AppUser, Event, Rsvp
 from django.utils import timezone
 
 # HTTP Tests
-c = Client()
-# Model Tests
+class HTTPLoggedOut(TestCase):
+    def setUp(self):
+        # Every test needs a client.
+        self.client = Client()
 
+    def test_welcome(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Sign in")
+        self.assertContains(response, "Register")
+
+    def test_register(self):
+        response = self.client.get('/register/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Register")
+        self.assertContains(response, "Sign up")
+
+class HTTPLoggedIn(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_login(self):
+        # Issue a GET request.
+        response = self.client.get('/customer/details/')
+
+        # Check that the response is 200 OK.
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the rendered context contains 5 customers.
+        self.assertEqual(len(response.context['customers']), 5)
+
+# Model Tests
 class AppUserTestCase(TestCase):
     def setUp(self):
         AppUser.objects.create(
