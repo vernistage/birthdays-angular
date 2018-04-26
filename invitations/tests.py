@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
 from invitations.models import AppUser, Event, Rsvp
 from django.utils import timezone
@@ -5,7 +6,6 @@ from django.utils import timezone
 # HTTP Tests
 class HTTPLoggedOut(TestCase):
     def setUp(self):
-        # Every test needs a client.
         self.client = Client()
 
     def test_welcome(self):
@@ -15,37 +15,68 @@ class HTTPLoggedOut(TestCase):
         self.assertContains(response, "Register")
 
     def test_register(self):
-        response = self.client.get('/register/')
+        response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Register")
         self.assertContains(response, "Sign up")
 
     def test_profile(self):
-        response = self.client.get('/user/1')
+        response = self.client.get(reverse('user_profile'))
         self.assertEqual(response.status_code, 301)
 
-    def test_event__create_page(self):
-        response = self.client.get('/events/create/')
-        self.assertEqual(response.status_code, 301)
+    def test_event_create_page(self):
+        response = self.client.get(reverse('invitations:create_event'))
+        self.assertEqual(response.status_code, 302)
 
     def test_events(self):
-        response = self.client.get('/events/')
-        self.assertEqual(response.status_code, 301)
+        response = self.client.get(reverse('invitations:events'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_rsvps(self):
+        response = self.client.get(reverse('invitations:rsvps'))
+        self.assertEqual(response.status_code, 302)
 
 class HTTPLoggedIn(TestCase):
     def setUp(self):
-        user = AppUser.objects.create(username='testuser')
+        self.user = AppUser.objects.create(username='testuser')
         self.client = Client()
-        self.client.force_login(user, backend=None)
+        self.client.force_login(self.user, backend=None)
+        self.event = Event.objects.create(
+            creator=self.user,
+            title="Test's Party",
+            description="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco",
+            address="123 Address St.",
+            start_time="2006-10-25 14:30:59.920830+00:00",
+            end_time="2006-10-26 14:30:59.920830+00:00"
+        )
 
-    def test_welcome(self):
+    def test_logged_in_welcome(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Profile")
         self.assertContains(response, "Log out")
 
-    def test_profile(self):
-        response = self.client.get('/user/1')
+    def test_logged_in_profile(self):
+        response = self.client.get(f'/user/{self.user.pk}', follow=True)
+        self.assertContains(response, "name")
+        self.assertContains(response, "Hello")
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_event_create_page(self):
+        response = self.client.get(reverse('invitations:create_event'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_event(self):
+        response = self.client.get('/events/{{self.event.pk}}/')
+        self.assertContains(response, "created by")
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_events(self):
+        response = self.client.get(reverse('invitations:events'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_rsvps(self):
+        response = self.client.get(reverse('invitations:rsvps'))
         self.assertEqual(response.status_code, 200)
 
 # Model Tests
