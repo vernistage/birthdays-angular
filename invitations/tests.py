@@ -23,38 +23,56 @@ class HTTPLoggedOut(TestCase):
     def test_logged_out_login(self):
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username")
+        self.assertContains(response, "Password")
 
     def test_logged_out_profile(self):
-        response = self.client.get('/user/1')
-        self.assertEqual(response.status_code, 301)
+        response = self.client.get('/user/1', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username")
+        self.assertContains(response, "Password")
 
     def test_logged_out_events(self):
-        response = self.client.get(reverse('invitations:events'))
-        self.assertEqual(response.status_code, 302)
+        response = self.client.get(reverse('invitations:events'), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username")
+        self.assertContains(response, "Password")
 
     def test_logged_out_event_detail_page(self):
-        response = self.client.get('/events/1')
-        self.assertEqual(response.status_code, 301)
+        response = self.client.get('/events/1', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username")
+        self.assertContains(response, "Password")
 
     def test_logged_out_event_create_page(self):
-        response = self.client.get(reverse('invitations:create_event'))
-        self.assertEqual(response.status_code, 302)
+        response = self.client.get(reverse('invitations:create_event'), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username")
+        self.assertContains(response, "Password")
 
     def test_logged_out_event_create_page(self):
-        response = self.client.get('/events/edit/1')
-        self.assertEqual(response.status_code, 301)
+        response = self.client.get('/events/edit/1', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username")
+        self.assertContains(response, "Password")
 
     def test_logged_out_event_destroy(self):
-        response = self.client.get('/events/destroy/1')
-        self.assertEqual(response.status_code, 301)
+        response = self.client.get('/events/destroy/1', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username")
+        self.assertContains(response, "Password")
 
     def test_logged_out_rsvps(self):
-        response = self.client.get(reverse('invitations:rsvps'))
-        self.assertEqual(response.status_code, 302)
+        response = self.client.get(reverse('invitations:rsvps'), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username")
+        self.assertContains(response, "Password")
 
     def test_logged_out_rsvp_edit(self):
-        response = self.client.get('/rsvps/edit/1')
-        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/rsvps/edit/1', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Username")
+        self.assertContains(response, "Password")
 
 class HTTPLoggedIn(TestCase):
     def setUp(self):
