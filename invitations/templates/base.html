@@ -1,9 +1,11 @@
-{% load staticfiles %}
+{% load static %}
 <html>
     <head>
         <title>Sarah's Birthday App</title>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="{% static 'invitations/style.css' %}" />
+        <link href='https://fonts.googleapis.com/css?family=Allura' rel='stylesheet'>
     </head>
     <body>
       <div class="container-fluid page-header">
@@ -16,7 +18,7 @@
             <li role="presentation">
               <a href="{% url 'user_profile' pk=user.pk %}">Profile</a>
             </li>
-            <p class="navbar-text navbar-right">
+            <p class="navbar-text navbar-right" id="greeting">
               Hello {{ user.username }}
             </p>
           </ul>
@@ -40,7 +42,7 @@
           </ul>
         {% endif %}
       </div>
-      <div class="container-fluid">
+      <div class="container-fluid" id="body-content">
         {% block content %}
         {% endblock %}
       </div>
