@@ -1,0 +1,15 @@
+.page-header {
+  background-color: #FFC300
+}
+
+.page-header>h1{
+  font-family: Allura;
+}
+
+ul {
+  list-style-type: none;
+}
+
+body {
+  background-color: #FFF9F8;
+}
