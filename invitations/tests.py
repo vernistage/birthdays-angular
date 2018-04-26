@@ -38,7 +38,10 @@ class HTTPLoggedOut(TestCase):
 
 class HTTPLoggedIn(TestCase):
     def setUp(self):
-        self.user = AppUser.objects.create(username='testuser')
+        self.user = AppUser.objects.create(username='testuser',
+                                            first_name='test',
+                                            last_name='user',
+                                            birth_date='1987-01-01')
         self.client = Client()
         self.client.force_login(self.user, backend=None)
         self.event = Event.objects.create(
@@ -58,7 +61,8 @@ class HTTPLoggedIn(TestCase):
 
     def test_logged_in_profile(self):
         response = self.client.get(reverse('user_profile',
-                                            kwargs={'pk': self.user.pk}), follow=True)
+                                            kwargs={'pk': self.user.pk}),
+                                            follow=True)
         self.assertContains(response, "name")
         self.assertContains(response, "Hello")
         self.assertEqual(response.status_code, 200)
