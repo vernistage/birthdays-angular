@@ -21,7 +21,7 @@ class HTTPLoggedOut(TestCase):
         self.assertContains(response, "Sign up")
 
     def test_profile(self):
-        response = self.client.get(reverse('user_profile'))
+        response = self.client.get('/user/1')
         self.assertEqual(response.status_code, 301)
 
     def test_event_create_page(self):
@@ -57,7 +57,8 @@ class HTTPLoggedIn(TestCase):
         self.assertContains(response, "Log out")
 
     def test_logged_in_profile(self):
-        response = self.client.get(f'/user/{self.user.pk}', follow=True)
+        response = self.client.get(reverse('user_profile',
+                                            kwargs={'pk': self.user.pk}), follow=True)
         self.assertContains(response, "name")
         self.assertContains(response, "Hello")
         self.assertEqual(response.status_code, 200)
@@ -67,7 +68,8 @@ class HTTPLoggedIn(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_logged_in_event(self):
-        response = self.client.get('/events/{{self.event.pk}}/')
+        response = self.client.get(reverse('invitations:event',
+                                            kwargs={'pk': self.event.pk}))
         self.assertContains(response, "created by")
         self.assertEqual(response.status_code, 200)
 
