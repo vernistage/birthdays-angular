@@ -120,6 +120,7 @@ class HTTPLoggedIn(TestCase):
     def test_logged_in_events(self):
         response = self.client.get(reverse('invitations:events'))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Manage Events")
 
     def test_logged_in_event(self):
         response = self.client.get(reverse('invitations:event',
@@ -130,11 +131,13 @@ class HTTPLoggedIn(TestCase):
     def test_logged_in_event_create_page(self):
         response = self.client.get(reverse('invitations:create_event'))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Event" or "Edit")
 
     def test_logged_in_event_edit_page(self):
         response = self.client.get(reverse('invitations:update_event',
                                             kwargs={'pk': self.event.pk}))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Edit")
 
     def test_logged_in_event_destroy_page(self):
         response = self.client.get(reverse('invitations:destroy_event',
@@ -144,11 +147,13 @@ class HTTPLoggedIn(TestCase):
     def test_logged_in_rsvps(self):
         response = self.client.get(reverse('invitations:rsvps'))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Invitations to you")
 
     def test_logged_in_rsvp_edit(self):
         response = self.client.get(reverse('invitations:update_rsvp',
                                             kwargs={'pk': self.rsvp.pk}))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "RSVP for")
 
 # Model Tests
 class AppUserTestCase(TestCase):
