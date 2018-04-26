@@ -8,36 +8,61 @@ class HTTPLoggedOut(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_welcome(self):
+    def test_logged_out_welcome(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Sign in")
         self.assertContains(response, "Register")
 
-    def test_register(self):
+    def test_logged_out_register(self):
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Register")
         self.assertContains(response, "Sign up")
 
-    def test_profile(self):
+    def test_logged_out_login(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_out_profile(self):
         response = self.client.get('/user/1')
         self.assertEqual(response.status_code, 301)
 
-    def test_event_create_page(self):
-        response = self.client.get(reverse('invitations:create_event'))
-        self.assertEqual(response.status_code, 302)
-
-    def test_events(self):
+    def test_logged_out_events(self):
         response = self.client.get(reverse('invitations:events'))
         self.assertEqual(response.status_code, 302)
 
-    def test_rsvps(self):
+    def test_logged_out_event_detail_page(self):
+        response = self.client.get('/events/1')
+        self.assertEqual(response.status_code, 301)
+
+    def test_logged_out_event_create_page(self):
+        response = self.client.get(reverse('invitations:create_event'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_logged_out_event_create_page(self):
+        response = self.client.get('/events/edit/1')
+        self.assertEqual(response.status_code, 301)
+
+    def test_logged_out_event_destroy(self):
+        response = self.client.get('/events/destroy/1')
+        self.assertEqual(response.status_code, 301)
+
+    def test_logged_out_rsvps(self):
         response = self.client.get(reverse('invitations:rsvps'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_logged_out_rsvp_edit(self):
+        response = self.client.get('/rsvps/edit/1')
         self.assertEqual(response.status_code, 302)
 
 class HTTPLoggedIn(TestCase):
     def setUp(self):
+        self.invitee = AppUser.objects.create(username='invitee',
+                                            password='password',
+                                            first_name='iam',
+                                            last_name='invited',
+                                            birth_date='1987-01-01')
         self.user = AppUser.objects.create(username='testuser',
                                             first_name='test',
                                             last_name='user',
@@ -52,6 +77,11 @@ class HTTPLoggedIn(TestCase):
             start_time="2006-10-25 14:30:59.920830+00:00",
             end_time="2006-10-26 14:30:59.920830+00:00"
         )
+        self.rsvp = Rsvp.objects.create(
+            event=self.event,
+            invitee=self.invitee,
+            is_attending=True,
+        )
 
     def test_logged_in_welcome(self):
         response = self.client.get('/')
@@ -63,26 +93,43 @@ class HTTPLoggedIn(TestCase):
         response = self.client.get(reverse('user_profile',
                                             kwargs={'pk': self.user.pk}),
                                             follow=True)
+        self.assertEqual(response.status_code, 200)
         self.assertContains(response, "name")
         self.assertContains(response, "Hello")
-        self.assertEqual(response.status_code, 200)
 
-    def test_logged_in_event_create_page(self):
-        response = self.client.get(reverse('invitations:create_event'))
-        self.assertEqual(response.status_code, 200)
 
-    def test_logged_in_event(self):
-        response = self.client.get(reverse('invitations:event',
-                                            kwargs={'pk': self.event.pk}))
-        self.assertContains(response, "created by")
-        self.assertEqual(response.status_code, 200)
 
     def test_logged_in_events(self):
         response = self.client.get(reverse('invitations:events'))
         self.assertEqual(response.status_code, 200)
 
+    def test_logged_in_event(self):
+        response = self.client.get(reverse('invitations:event',
+                                            kwargs={'pk': self.event.pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "created by")
+
+    def test_logged_in_event_create_page(self):
+        response = self.client.get(reverse('invitations:create_event'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_event_edit_page(self):
+        response = self.client.get(reverse('invitations:update_event',
+                                            kwargs={'pk': self.event.pk}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_event_destroy_page(self):
+        response = self.client.get(reverse('invitations:destroy_event',
+                                            kwargs={'pk': self.event.pk}))
+        self.assertEqual(response.status_code, 200)
+
     def test_logged_in_rsvps(self):
         response = self.client.get(reverse('invitations:rsvps'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_rsvp_edit(self):
+        response = self.client.get(reverse('invitations:update_rsvp',
+                                            kwargs={'pk': self.rsvp.pk}))
         self.assertEqual(response.status_code, 200)
 
 # Model Tests
