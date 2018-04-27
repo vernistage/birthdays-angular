@@ -19,7 +19,7 @@
       </ul>
       <h3>Who's going:</h3>
       <ul>
-        {% for yes in confirmed_yes %}
+        {% for yes in event.confirmed_yes %}
           <li>{{ yes.invitee.username }}</li>
         {% endfor %}
       </ul>

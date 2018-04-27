@@ -51,6 +51,14 @@ class Event(models.Model):
     def get_invitees(self):
         return self.invitees.all()
 
+    def confirmed_yes(self):
+        rsvpd_yes = []
+        for rsvp in self.rsvp_set.all():
+            if rsvp.is_attending:
+                rsvpd_yes.append(rsvp)
+        return rsvpd_yes
+
+
 
 class Rsvp(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
