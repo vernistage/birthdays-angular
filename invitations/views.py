@@ -113,6 +113,7 @@ class EventUpdateView(UpdateView):
         self.object = form.save(commit=False)
         for person in form.cleaned_data['invitees']:
             Rsvp.objects.get_or_create(invitee=person, event=self.object)
+        self.object.save()
         return super(ModelFormMixin, self).form_valid(form)
 
 class EventDeleteView(DeleteView):
