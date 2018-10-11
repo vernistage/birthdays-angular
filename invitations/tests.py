@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase, Client
 from invitations.models import AppUser, Event, Rsvp
 from django.utils import timezone

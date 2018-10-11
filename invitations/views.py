@@ -24,7 +24,7 @@ from django.views.generic import (
 )
 from .forms import SignUpForm
 from django.views.generic.edit import ModelFormMixin
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 User = get_user_model()
 
@@ -38,6 +38,9 @@ def register(request):
             user = authenticate(username=username, password=raw_password)
             login (request, user)
             return redirect('user_profile', user.pk)
+        else:
+            return render(request, 'invitations/register.html', {'form': form})
+
     else:
         form = SignUpForm()
         return render(request, 'invitations/register.html', {'form': form})

@@ -2,6 +2,8 @@ from . import views
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
+app_name = "invitations"
+
 urlpatterns = [
     url(r'^events/$', login_required(views.EventListView.as_view()), name='events'),
     url(r'^events/(?P<pk>\d+)/$', login_required(views.EventDetailView.as_view()), name='event'),

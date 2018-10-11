@@ -15,16 +15,18 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth import views
+from django.contrib.auth import views as auth_views
 from invitations import views as invitations_views
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^register/$', invitations_views.register, name='register'),
     url(r'^$', invitations_views.WelcomeView.as_view(), name='welcome'),
-    url(r'^user/(?P<pk>\d+)/$', login_required(invitations_views.AppUserDetailView.as_view()), name='user_profile'),
-    url(r'^accounts/login/$', views.login, {'template_name': 'registration/login.html'}, name='login'),
-    url(r'^accounts/logout/$', views.logout, name="logout", kwargs={'next_page': '/'}),
     url(r'', include('invitations.urls', namespace="invitations")),
+    url(r'^register/$', invitations_views.register, name='register'),
+    url(r'^user/(?P<pk>\d+)/$', login_required(invitations_views.AppUserDetailView.as_view()), name='user_profile'),
+    url(r'^accounts/login/$', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    url(r'^accounts/logout/$', auth_views.LogoutView.as_view(), name="logout", kwargs={'next_page': '/'}),
+    url(r'^api-auth/', include('rest_framework.urls',
+                                namespace='rest_framework')),
 ]

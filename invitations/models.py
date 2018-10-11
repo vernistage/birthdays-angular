@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 class AppUser(AbstractUser):
     birth_date = models.DateField(blank=True, null=True)
@@ -11,6 +11,8 @@ class AppUser(AbstractUser):
         'Event',
         through='Rsvp',
         through_fields=('invitee', 'event'),
+        blank=True,
+        null=True
     )
 
     def __str__(self):
@@ -30,6 +32,7 @@ class Event(models.Model):
         'AppUser',
         through='Rsvp',
         through_fields=('event', 'invitee'),
+        blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
