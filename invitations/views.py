@@ -1,6 +1,9 @@
 from django.shortcuts import get_object_or_404
 
 from rest_framework import generics
+from rest_framework import viewsets
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 
 from . import models
 from . import forms
@@ -57,6 +60,22 @@ class RetrieveUpdateDestroyRsvp(generics.RetrieveUpdateDestroyAPIView):
             event_id=self.kwargs.get('event_pk'),
             pk=self.kwargs.get('pk')
         )
+
+#API V2
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = models.Event.objects.all()
+    serializer_class = serializers.EventSerializer
+
+    # Only using this route to get events
+    @detail_route(methods=['get'])
+    def events(self, request, pk=None):
+        event = self.get_object()
+        serializer = serializers.EventSerializer(event.rsvps.all(), many=True)
+        return Response(serializer.data)
+
+class RsvpViewSet(viewsets.ModelViewSet):
+    queryset = models.Rsvp.objects.all()
+    serializer_class = serializers.RsvpSerializer
 
 #Django views
 # class AppUserDetailView(DetailView):
