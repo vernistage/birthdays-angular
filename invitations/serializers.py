@@ -24,6 +24,7 @@ class EventSerializer(serializers.ModelSerializer):
             'description',
             'address',
             'start_time',
+            'end_time',
             'creator',
             'invitees',
             'created_at',
