@@ -65,3 +65,4 @@ class RsvpViewSet(mixins.CreateModelMixin,
     serializer_class = serializers.RsvpSerializer
 
 # TODO Rsvp Detail View
+# TODO Viewsets?

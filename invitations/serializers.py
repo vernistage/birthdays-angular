@@ -27,11 +27,16 @@ class RsvpSerializer(serializers.ModelSerializer):
         model = models.Rsvp
 
 class EventSerializer(serializers.ModelSerializer):
-    # rsvps = RsvpSerializer(many=True, read_only=True)
-    rsvp_set = serializers.HyperlinkedRelatedField(
+    # rsvp_set = RsvpSerializer(many=True, read_only=True)
+    # rsvp_set = serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name='apiv2:rsvp-detail'
+    # )
+    # Fastest option below just gets the integer
+    rsvp_set = serializers.PrimaryKeyRelatedField(
         many=True,
         read_only=True,
-        view_name='apiv2:rsvp-detail'
     )
     class Meta:
         fields = (
