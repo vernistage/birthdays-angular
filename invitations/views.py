@@ -51,8 +51,17 @@ class EventViewSet(viewsets.ModelViewSet):
     # Only using this route to get events
     @detail_route(methods=['get'])
     def rsvps(self, request, pk=None):
-        event = self.get_object()
-        serializer = serializers.RsvpSerializer(event.rsvp_set.all(), many=True)
+        self.pagination_class.page_size = 1
+        rsvps = models.Rsvp.objects.filter(event_id=pk)
+
+        page = self.paginate_queryset(rsvps)
+
+        if page is not None:
+            serializer = serializers.RsvpSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = serializers.RsvpSerializer(
+            rsvps, many=True)
         return Response(serializer.data)
 
 
