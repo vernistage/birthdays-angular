@@ -38,6 +38,9 @@ class EventSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True,
     )
+    # custom serializer field
+    duration = serializers.SerializerMethodField()
+
     class Meta:
         fields = (
             'id',
@@ -50,6 +53,18 @@ class EventSerializer(serializers.ModelSerializer):
             'invitees',
             'rsvp_set',
             'created_at',
-            'last_modified'
+            'last_modified',
+            'duration',
         )
         model = models.Event
+
+    # custom serializer method okay for calculating on the fly (more overhead)
+    def get_duration(self, obj):
+        return obj.end_time - obj.start_time
+
+    # def validate_title(self, value):
+    #     if self.title.len > 3:
+    #         return self.title
+    #     raise serializers.ValidationError(
+    #         'Title must be longer than three characters.'
+    #     )

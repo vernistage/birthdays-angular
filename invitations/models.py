@@ -15,8 +15,6 @@ class AppUser(AbstractUser):
         null=True
     )
 
-    def __str__(self):
-        return self.first_name
 
 class Event(models.Model):
     title = models.CharField(max_length=100)
